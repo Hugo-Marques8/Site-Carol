@@ -1,179 +1,150 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Great+Vibes&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Great+Vibes&family=Poiret+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700&display=swap');
 
+/* Resetação básica */
 * {
-    color: black;
-    font-weight: lighter;
-    font-family: "Cormorant Garamond", serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
+    width: 100%;
     margin: 0;
     padding: 0;
     background-color: #F0EFEB;
+    font-family: "Cormorant Garamond", serif;
+    line-height: 1.6;
 }
-header{
+
+/* Header */
+header {
     display: flex;
-    gap: 100px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
     background-color: #F0EFEB;
 }
-.contato{
+
+.contato {
     display: flex;
-    gap: 20px;
-    top: 18px;
-    left: 40px;
-    position: relative;
+    gap: 10px;
+}
+
+.contato a i {
+    font-size: 24px;
+    color: #333;
 }
 
 span#buguer {
     display: block;
-    color: black;
-    text-align: left;
-    padding: 10px;
-}
-.material-symbols-outlined{
-    font-size: 100px;
+    font-size: 36px;
+    cursor: pointer;
 }
 
+/* Navegação */
 nav ul#menu {
     list-style-type: none;
     background-color: #a48374;
     display: none;
+    flex-direction: column;
+    padding: 10px;
+}
+
+nav ul#menu li {
+    margin: 10px 0;
 }
 
 nav ul#menu li a {
-    display: block;
     color: white;
     text-decoration: none;
+    font-size: 18px;
 }
 
-@media (min-width: 766px) {
+@media (min-width: 768px) {
     nav ul#menu {
-        list-style-type: none;
-        /* Remove os marcadores da lista */
-        padding: 0;
-        margin: 0;
         display: flex;
-        /* Coloca os itens lado a lado */
-        background-color: #a48374;
-        /* Cor de fundo do menu */
+        flex-direction: row;
     }
 
     nav ul#menu li {
-        margin: 0;
-    }
-
-    nav ul#menu li a {
-        display: block;
-        color: white;
-        padding: 15px 20px;
-        text-decoration: none;
-        /* Remove o sublinhado */
-    }
-
-    nav ul#menu li a:hover {
-        background-color: #555;
-        /* Cor de fundo ao passar o mouse */
+        margin: 0 15px;
     }
 }
 
-#titulo{
-    background-color: white;
-    padding: 40px;
-}
-
-#titulo h1 {
-    color: brown;
+/* Logo e Container */
+#logo {
     text-align: center;
-    font-size: 60px;
-    background-image: linear-gradient(#a48374);
-    -webkit-background-clip: text;
-    background-clip: text;
-    text-shadow: 2px 4px 8px #d1c7bd;
-    filter: brightness(1.0);
-    filter: drop-shadow(1.0);
-    font-weight: lighter;
-    font-family: "Cormorant Garamond", serif;
+    margin: 20px 0;
 }
 
+#logo img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Conteúdo Principal */
 .container {
     display: flex;
-    /* permite usar divs lado a lado /*/
-    gap: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
 }
 
 .imagem1 img {
-    display: flex;
-    position: relative;
-    width: 600px;
-    height: 700px;
-    background-size: cover;
-    object-fit: cover;
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
 }
 
 .texto {
-    font-size: 30px;
-    text-transform: uppercase;
-    text-align: center;
-    font-family: "Cormorant Garamond", serif;
+    max-width: 600px;
+    font-size: 18px;
+    text-align: justify;
 }
 
-.tituloserviços{
+/* Títulos */
+.tituloserviços {
     background-color: #cdc6c3;
     padding: 10px;
-    margin: 15px;
-}
-.tituloserviçosh2{
-    color: black;
-    font-family: "Cormorant Garamond", serif;
-    font-size: 50px;
-    font-weight: 400;
-    font-style: normal;
-    text-transform: none;
-    text-align: center;
-      }
-.fotos{
-    position: relative;
-    width: 700px;
-    height: 700px;
-}
-.fotos img{
-    position: relative;
-    display: flex;
-    background-size: cover;
-    max-height: 100%;
-    overflow: hidden;
-}
-
-/* fazer um carrosel depois para cada tipo de trabalho /*/
-.trabalhos h2 {
-    font-size: 45px;
-    color: brown;
-    font-family: "Poiret One", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-    text-transform: uppercase;
+    margin: 15px 0;
     text-align: center;
 }
 
+.tituloserviçosh2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Imagens */
+.fotos img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+/* Responsividade */
 @media (max-width: 768px) {
-    .container {
-        flex-direction: column; /* Empilha os itens */
-        align-items: center; /* Centraliza os itens */
+    header {
+        flex-wrap: wrap;
     }
 
-    .imagem1 img {
-        width: 100%; /* Ajusta a largura da imagem ao tamanho do container */
-        height: auto; /* Mantém a proporção da imagem */
+    nav ul#menu {
+        display: none;
+    }
+
+    .container {
+        flex-direction: column;
+        padding: 10px;
     }
 
     .texto {
-        width: 100%; /* Ajusta a largura do texto */
-        font-size: 30px; /* Reduz o tamanho da fonte para telas menores */
+        font-size: 16px;
     }
 
     h1 {
-        font-size: 50px; /* Reduz o tamanho do título */
+        font-size: 28px;
     }
 }
+
