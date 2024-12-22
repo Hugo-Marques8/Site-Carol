@@ -25,13 +25,13 @@ header {
     background-color: #F0EFEB;
 }
 
-.contato {
+.contatos {
     display: flex;
-    gap: 10px;
+    gap: 20px;
 }
 
-.contato a i {
-    font-size: 24px;
+.contatos a i {
+    font-size: 35px;
     color: #333;
 }
 
@@ -75,6 +75,8 @@ nav ul#menu li a {
 #logo {
     text-align: center;
     margin: 20px 0;
+    font-size: 24px;
+    font-weight: bold;
 }
 
 #logo img {
@@ -147,4 +149,51 @@ nav ul#menu li a {
         font-size: 28px;
     }
 }
+
+footer {
+    background-color: #a48374;
+    color: #ffffff;
+    text-align: center;
+    padding: 20px;
+    font-family: "Cormorant Garamond", serif;
+    margin-top: 20px;
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-decoration: none;
+}
+
+.footer-text2{
+    margin: 20px 48px;
+    font-size: 18px;
+    text-transform: uppercase;
+    border: solid 2px;
+    border-radius: 10px 10px 10px 10px;
+    color: #ffffff;
+}
+.footer-text2 i {
+    color: #25D366;
+}
+
+.footer-text3{
+    font-size: 15px;
+}
+.footer-text3 i{
+    color: #25D366;
+}
+
+.footer-text2 a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.footer-text2 a:hover {
+    color: #cdc6c3;
+}
+
 
