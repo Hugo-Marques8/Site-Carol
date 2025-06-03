@@ -4,14 +4,14 @@ document.addEventListener("DOMContentLoaded", function() {
     const currentYearSpan = document.getElementById("currentYear");
     const header = document.querySelector("header");
 
-    // Menu Hamburguer Toggle (mantido como antes)
+    // Menu Hamburguer Toggle
     if (burger && menu) {
         burger.addEventListener("click", function (event) {
-            event.stopPropagation();
+            event.stopPropagation(); 
             menu.classList.toggle("active");
             const isExpanded = menu.classList.contains("active");
             burger.setAttribute("aria-expanded", isExpanded.toString());
-            burger.innerHTML = isExpanded ? "close" : "menu";
+            burger.innerHTML = isExpanded ? "close" : "menu"; 
         });
 
         const menuLinks = menu.querySelectorAll('a');
@@ -36,150 +36,167 @@ document.addEventListener("DOMContentLoaded", function() {
         if (burger) {
             burger.addEventListener('keydown', function(event) {
                 if (event.key === 'Enter' || event.key === ' ') {
-                    event.preventDefault();
-                    burger.click();
+                    event.preventDefault(); 
+                    burger.click(); 
                 }
             });
         }
     }
 
-    // Atualiza o ano no rodapé (mantido como antes)
+    // Atualiza o ano no rodapé
     if (currentYearSpan) {
         currentYearSpan.textContent = new Date().getFullYear();
     }
 
-    // Active link no scroll (mantido como antes)
+    // Active link no scroll
     const sections = document.querySelectorAll("main section[id]");
-    const navLi = document.querySelectorAll("nav ul#menu li a");
+    const navLinks = document.querySelectorAll("nav ul#menu li a"); // Renomeado para navLinks para clareza
 
-    if (sections.length > 0 && navLi.length > 0 && header) {
-        window.addEventListener("scroll", () => {
-            let current = "";
-            const headerHeight = header.offsetHeight;
+    if (sections.length > 0 && navLinks.length > 0 && header) {
+        const headerHeight = header.offsetHeight;
+
+        const updateActiveLink = () => {
+            let currentSectionId = "";
+            const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
 
             sections.forEach((section) => {
                 const sectionTop = section.offsetTop;
-                if (pageYOffset >= (sectionTop - (headerHeight + 40))) {
-                    current = section.getAttribute("id");
+                if (scrollPosition >= (sectionTop - (headerHeight + 70))) { // Aumentei um pouco o offset
+                    currentSectionId = section.getAttribute("id");
                 }
             });
 
-            navLi.forEach((a) => {
-                a.classList.remove("active-link");
-                if (a.getAttribute("href").includes(current)) {
-                    a.classList.add("active-link");
+            navLinks.forEach((link) => {
+                link.classList.remove("active-link");
+                // Verifica se o href do link (removendo o '#') corresponde ao ID da seção atual
+                if (link.getAttribute("href").substring(1) === currentSectionId) {
+                    link.classList.add("active-link");
                 }
             });
-            if (window.pageYOffset < (sections[0].offsetTop - (headerHeight + 40) )) {
-                 navLi.forEach((a) => a.classList.remove("active-link"));
-                 const homeLink = document.querySelector("nav ul#menu li a[href='#home']");
-                 if(homeLink) homeLink.classList.add("active-link");
+
+            // Caso especial para o link "Home" quando o scroll está no topo
+            // ou nenhuma outra seção está "ativa" (currentSectionId permaneceu vazio)
+            if (currentSectionId === "" && scrollPosition < (sections[0].offsetTop - (headerHeight + 70))) {
+                const homeLink = document.querySelector("nav ul#menu li a[href='#home']");
+                if (homeLink) {
+                    navLinks.forEach(l => l.classList.remove("active-link")); // Garante que só home esteja ativo
+                    homeLink.classList.add("active-link");
+                }
+            } else if (currentSectionId === "" && sections.length > 0 && scrollPosition < sections[0].offsetTop) {
+                 // Se estiver acima da primeira seção, marca o link Home como ativo
+                const homeLink = document.querySelector("nav ul#menu li a[href='#home']");
+                if (homeLink) {
+                    navLinks.forEach(l => l.classList.remove("active-link"));
+                    homeLink.classList.add("active-link");
+                }
             }
-        });
+        };
+        
+        window.addEventListener("scroll", updateActiveLink);
+        updateActiveLink(); // Chama uma vez para definir o estado inicial
     }
 
 
-    // LÓGICA DO CARROSSEL DE MÚLTIPLOS SLIDES COM LOOPING
+    // LÓGICA DO CARROSSEL DE MÚLTIPLOS SLIDES COM LOOPING (REVISADO)
     const carrosselMainWrapper = document.querySelector(".carrossel-main-wrapper");
     if (carrosselMainWrapper) {
         const carrosselWrapper = carrosselMainWrapper.querySelector(".carrossel-wrapper");
-        const slides = Array.from(carrosselWrapper.children);
+        const slides = carrosselWrapper ? Array.from(carrosselWrapper.children) : [];
         const nextBtn = carrosselMainWrapper.querySelector(".carrossel-btn.next");
         const prevBtn = carrosselMainWrapper.querySelector(".carrossel-btn.prev");
         const indicadoresContainer = carrosselMainWrapper.querySelector(".carrossel-indicadores");
 
-        if (slides.length > 0) {
-            let currentIndex = 0; // O índice do primeiro slide atualmente visível
-            let slidesPerView = getSlidesPerView(); // Função para obter slides por view baseado na tela
-
-            // Função para determinar quantos slides mostrar (mantida como antes)
+        if (slides.length > 0 && carrosselWrapper && nextBtn && prevBtn) { // Adicionado checagens para elementos
+            let currentIndex = 0; 
+            let slidesPerView = getSlidesPerView();
+            
             function getSlidesPerView() {
-                if (window.innerWidth <= 768 && window.innerWidth > 480) { // Tablet
-                    return parseInt(getComputedStyle(document.documentElement).getPropertyValue('--slides-to-show-tablet').trim()) || 2;
-                } else if (window.innerWidth <= 480) { // Mobile
-                    return parseInt(getComputedStyle(document.documentElement).getPropertyValue('--slides-to-show-mobile').trim()) || 1;
+                // Garante que documentElement exista antes de tentar ler seu estilo
+                if (document.documentElement) {
+                    if (window.innerWidth <= 480) { 
+                        return parseInt(getComputedStyle(document.documentElement).getPropertyValue('--slides-to-show-mobile').trim()) || 1;
+                    } else if (window.innerWidth <= 768) { 
+                        return parseInt(getComputedStyle(document.documentElement).getPropertyValue('--slides-to-show-tablet').trim()) || 2;
+                    }
+                    return parseInt(getComputedStyle(document.documentElement).getPropertyValue('--slides-to-show-desktop').trim()) || 3;
                 }
-                return parseInt(getComputedStyle(document.documentElement).getPropertyValue('--slides-to-show-desktop').trim()) || 3;
-            }
-
-            // Função para configurar as dimensões do carrossel (mantida como antes)
-            function setupCarouselDimensions() {
-                slidesPerView = getSlidesPerView();
-                // A largura dos slides é definida pelo CSS, o JS apenas recalcula a posição.
-            }
-
-            // Cria os indicadores (mantido como antes, mas com ajuste para total de "páginas" se desejar)
-            // Para loop infinito, os indicadores podem representar cada slide individualmente ou cada "página"
-            // Por simplicidade, faremos os indicadores para cada slide, mas a navegação é por "grupo".
-            indicadoresContainer.innerHTML = '';
-            slides.forEach((_, index) => {
-                const indicador = document.createElement("button");
-                indicador.classList.add("carrossel-indicador");
-                indicador.setAttribute("aria-label", `Ir para slide ${index + 1}`);
-                indicador.addEventListener("click", () => {
-                    goToSlide(index); // Ao clicar no indicador, vai para aquele slide
-                });
-                indicadoresContainer.appendChild(indicador);
-            });
-            const indicadores = Array.from(indicadoresContainer.children);
-
-            const updateIndicadores = () => {
-                indicadores.forEach(indicador => indicador.classList.remove("active"));
-                // O indicador ativo é o do primeiro slide visível
-                if (indicadores[currentIndex]) {
-                    indicadores[currentIndex].classList.add("active");
-                }
-            };
-
-            const goToSlide = (index) => {
-                const totalSlides = slides.length;
-                const maxPossibleIndex = totalSlides - slidesPerView; // Último índice que pode ser o começo de um "grupo" visível
-
-                let targetIndex = index;
-
-                // Lógica de LOOPING para o próximo slide
-                // Se o índice-alvo for maior que o último índice que pode iniciar um grupo visível,
-                // e ainda há slides para "passar" que não foram vistos no último grupo completo,
-                // ou se já passamos de todos os slides e queremos voltar para o início.
-                if (targetIndex > maxPossibleIndex && totalSlides > slidesPerView) {
-                    targetIndex = 0; // Volta para o início do carrossel
-                } else if (targetIndex >= totalSlides) { // Caso excepcional onde totalSlides <= slidesPerView
-                    targetIndex = 0; // Volta para o início
-                }
-
-                // Lógica de LOOPING para o slide anterior
-                if (targetIndex < 0) {
-                    // Se o índice-alvo é menor que zero, vai para o início do último "grupo" visível
-                    targetIndex = maxPossibleIndex;
-                    if (targetIndex < 0) targetIndex = 0; // Fallback se slidesPerView for maior que totalSlides
-                }
-
-                // Calcula o deslocamento percentual
-                const translatePercentage = targetIndex * (100 / slidesPerView);
-                carrosselWrapper.style.transform = `translateX(-${translatePercentage}%)`;
-                
-                currentIndex = targetIndex;
-                updateIndicadores();
-            };
-
-            if (nextBtn && prevBtn) {
-                nextBtn.addEventListener("click", () => {
-                    goToSlide(currentIndex + 1); // Tenta ir para o próximo slide
-                });
-
-                prevBtn.addEventListener("click", () => {
-                    goToSlide(currentIndex - 1); // Tenta ir para o slide anterior
-                });
+                return 3; // Fallback genérico se documentElement não estiver pronto
             }
             
-            setupCarouselDimensions(); // Configura dimensões iniciais
-            goToSlide(0); // Garante que o carrossel comece no primeiro slide
+            const maxStartIndex = () => Math.max(0, slides.length - slidesPerView);
 
-            // Recalcula e reajusta no redimensionamento (mantido como antes)
+            function setupCarouselDimensions() {
+                slidesPerView = getSlidesPerView();
+            }
+
+            const createIndicadores = () => {
+                if (!indicadoresContainer) return;
+                indicadoresContainer.innerHTML = ''; 
+                // Criar um indicador para cada slide individual
+                slides.forEach((_, index) => {
+                    const indicador = document.createElement("button");
+                    indicador.classList.add("carrossel-indicador");
+                    indicador.setAttribute("aria-label", `Ir para slide ${index + 1}`);
+                    indicador.addEventListener("click", () => {
+                        // Ao clicar no indicador, o slide clicado deve ser o início da visualização,
+                        // respeitando o limite máximo de índice inicial.
+                        applyTransform(Math.min(index, maxStartIndex()));
+                    });
+                    indicadoresContainer.appendChild(indicador);
+                });
+            };
+            
+            const updateIndicadoresVisuais = () => {
+                if (!indicadoresContainer) return;
+                const currentIndicadores = Array.from(indicadoresContainer.children);
+                currentIndicadores.forEach((indicador, idx) => {
+                    // O indicador ativo é aquele que corresponde ao primeiro slide visível (currentIndex)
+                    if (idx === currentIndex) {
+                        indicador.classList.add("active");
+                    } else {
+                        indicador.classList.remove("active");
+                    }
+                });
+            };
+            
+            const applyTransform = (slideIndex) => {
+                const safeIndex = Math.max(0, Math.min(slideIndex, maxStartIndex()));
+                // A largura de cada "passo" de translação é 100% dividido pelo número de slides visíveis.
+                // Multiplicamos pelo índice do slide que deve iniciar a visualização.
+                const translatePercentage = safeIndex * (100 / slidesPerView); 
+                carrosselWrapper.style.transform = `translateX(-${translatePercentage}%)`;
+                currentIndex = safeIndex; // Atualiza o índice atual
+                updateIndicadoresVisuais();
+            };
+
+            nextBtn.addEventListener("click", () => {
+                let newStartIndex = currentIndex + 1;
+                if (newStartIndex > maxStartIndex() || newStartIndex >= slides.length) { // Adicionado newStartIndex >= slides.length para loop correto
+                    newStartIndex = 0; 
+                }
+                applyTransform(newStartIndex);
+            });
+
+            prevBtn.addEventListener("click", () => {
+                let newStartIndex = currentIndex - 1;
+                if (newStartIndex < 0) {
+                    newStartIndex = maxStartIndex(); 
+                }
+                applyTransform(newStartIndex);
+            });
+            
+            setupCarouselDimensions();
+            createIndicadores(); // Criar indicadores após setup inicial
+            applyTransform(0); 
+
             window.addEventListener('resize', () => {
                 setupCarouselDimensions();
-                goToSlide(currentIndex);
+                createIndicadores(); // Recriar indicadores se slidesPerView mudar
+                applyTransform(currentIndex); 
             });
+        } else {
+            // Opcional: esconder controles do carrossel se não houver slides ou elementos essenciais
+            if(carrosselMainWrapper) carrosselMainWrapper.style.display = 'none';
         }
     }
 });
